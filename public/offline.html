@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Offline - LearnAI</title>
+    <style>
+        :root {
+            --bg-primary: #0f0c29;
+            --text-primary: #ffffff;
+            --text-secondary: #a5b4fc;
+            --accent-primary: #7c3aed;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 40px;
+            z-index: 10;
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--accent-primary), #a78bfa);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 14px;
+            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Background decorative elements */
+        .blur {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--accent-primary);
+            filter: blur(100px);
+            opacity: 0.2;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .blur-1 {
+            top: -100px;
+            left: -100px;
+        }
+
+        .blur-2 {
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .wifi-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .wifi-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+        }
+
+        .wifi-arc {
+            position: absolute;
+            border: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            border-bottom: transparent;
+            border-left: transparent;
+            border-right: transparent;
+            animation: wifi-blink 1.5s infinite;
+        }
+
+        .wifi-arc-1 {
+            width: 30px;
+            height: 30px;
+            top: -5px;
+            animation-delay: 0s;
+        }
+
+        .wifi-arc-2 {
+            width: 50px;
+            height: 50px;
+            top: -15px;
+            animation-delay: 0.2s;
+        }
+
+        .wifi-arc-3 {
+            width: 70px;
+            height: 70px;
+            top: -25px;
+            animation-delay: 0.4s;
+        }
+
+        @keyframes wifi-blink {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="blur blur-1"></div>
+    <div class="blur blur-2"></div>
+
+    <div class="container">
+        <div class="wifi-icon">
+            <div class="wifi-dot"></div>
+            <div class="wifi-arc wifi-arc-1"></div>
+            <div class="wifi-arc wifi-arc-2"></div>
+            <div class="wifi-arc wifi-arc-3"></div>
+        </div>
+        <h1>You're Offline</h1>
+        <p>It looks like you've lost your connection. Don't worry, your last course recommendations are safe!</p>
+        <a href="/" class="btn">Try Reconnecting 🚀</a>
+    </div>
+
+    <script>
+        window.addEventListener('online', () => {
+            window.location.href = '/';
+        });
+    </script>
+</body>
+
+</html>
