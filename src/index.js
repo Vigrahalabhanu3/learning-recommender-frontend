@@ -14,14 +14,17 @@ root.render(
 );
 
 // PWA Service Worker Registration
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     window.addEventListener('load', () => {
+        const swUrl = `${process.env.PUBLIC_URL || ''}/sw.js`;
         navigator.serviceWorker
-            .register('/sw.js')
+            .register(swUrl)
             .then(reg => {
                 console.log('SW registered:', reg);
                 // Check for updates every 60 seconds
-                setInterval(() => reg.update(), 60000);
+                setInterval(() => {
+                    if (reg.update) reg.update();
+                }, 60000);
             })
             .catch(err => console.log('SW error:', err));
     });

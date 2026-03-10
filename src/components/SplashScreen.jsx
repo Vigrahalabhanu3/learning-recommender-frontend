@@ -2,20 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SplashScreen = ({ onFinish }) => {
-    const [isVisible, setIsVisible] = useState(!localStorage.getItem('splash_shown'));
+    const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
-        if (isVisible) {
-            const timer = setTimeout(() => {
-                setIsVisible(false);
+        const timer = setTimeout(() => {
+            setIsVisible(false);
+            try {
                 localStorage.setItem('splash_shown', 'true');
-                if (onFinish) onFinish();
-            }, 3000);
-            return () => clearTimeout(timer);
-        } else {
+            } catch (e) {
+                console.warn("Storage item set failed:", e);
+            }
             if (onFinish) onFinish();
-        }
-    }, [isVisible, onFinish]);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [onFinish]);
 
     return (
         <AnimatePresence>
@@ -28,7 +29,7 @@ const SplashScreen = ({ onFinish }) => {
                 >
                     {/* Animated Particles in Background */}
                     <div className="absolute inset-0 pointer-events-none opacity-30">
-                        {[...Array(20)].map((_, i) => (
+                        {Array.from({ length: 20 }).map((_, i) => (
                             <motion.div
                                 key={i}
                                 animate={{
