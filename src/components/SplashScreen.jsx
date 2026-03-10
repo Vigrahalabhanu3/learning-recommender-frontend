@@ -5,15 +5,18 @@ const SplashScreen = ({ onFinish }) => {
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
+        // Minimum view time for the splash screen
         const timer = setTimeout(() => {
             setIsVisible(false);
-            try {
-                localStorage.setItem('splash_shown', 'true');
-            } catch (e) {
-                console.warn("Storage item set failed:", e);
-            }
-            if (onFinish) onFinish();
-        }, 3000);
+
+            // Allow exit animation to complete before calling onFinish
+            setTimeout(() => {
+                try {
+                    localStorage.setItem('splash_shown', 'true');
+                } catch (e) { }
+                if (onFinish) onFinish();
+            }, 800);
+        }, 2200);
 
         return () => clearTimeout(timer);
     }, [onFinish]);
@@ -23,13 +26,13 @@ const SplashScreen = ({ onFinish }) => {
             {isVisible && (
                 <motion.div
                     initial={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    transition={{ duration: 0.8, ease: [0.43, 0.13, 0.23, 0.96] }}
                     className="fixed inset-0 z-[9999] bg-[#0f0c29] flex flex-col items-center justify-center overflow-hidden"
                 >
                     {/* Animated Particles in Background */}
                     <div className="absolute inset-0 pointer-events-none opacity-30">
-                        {Array.from({ length: 20 }).map((_, i) => (
+                        {Array.from({ length: 25 }).map((_, i) => (
                             <motion.div
                                 key={i}
                                 animate={{
@@ -81,19 +84,21 @@ const SplashScreen = ({ onFinish }) => {
                             Learn<span className="text-purple-500">AI</span>
                         </motion.h1>
 
-                        <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: 200 }}
-                            transition={{ delay: 0.8, duration: 1.5 }}
-                            className="h-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full mx-auto mt-8 overflow-hidden"
-                        >
+                        <div className="relative mt-8">
                             <motion.div
-                                animate={{ x: [-200, 200] }}
-                                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                                className="w-1/2 h-full bg-white/40"
-                            />
-                        </motion.div>
-                        <p className="text-purple-300 text-[10px] uppercase tracking-[0.3em] mt-4 font-black">Initialising Intelligence...</p>
+                                initial={{ width: 0 }}
+                                animate={{ width: 200 }}
+                                transition={{ delay: 0.3, duration: 1.8 }}
+                                className="h-1 bg-white/10 rounded-full mx-auto overflow-hidden"
+                            >
+                                <motion.div
+                                    animate={{ x: [-200, 200] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                    className="w-1/2 h-full bg-gradient-to-r from-purple-500 to-indigo-500 shadow-[0_0_10px_#7c3aed]"
+                                />
+                            </motion.div>
+                        </div>
+                        <p className="text-purple-300 text-[10px] uppercase tracking-[0.4em] mt-6 font-black opacity-60">Initialising Neural Pipeline...</p>
                     </motion.div>
                 </motion.div>
             )}
