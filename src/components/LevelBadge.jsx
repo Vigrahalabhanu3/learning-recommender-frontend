@@ -75,7 +75,7 @@ const LevelBadge = ({ level, confidence }) => {
                             AI Confidence
                         </div>
                         <div className={`text-xl font-black ${colors.text}`}>
-                            {confidence}%
+                            {confidence?.toString().includes('%') ? confidence : `${confidence}%`}
                         </div>
                     </div>
                     <div className="h-2 w-full bg-[var(--bg-primary)] rounded-full overflow-hidden border border-[var(--border-color)]">

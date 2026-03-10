@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { filterEnglishCourses, normalizeConfidence } from '../utils/filter';
 import PipelineNode from '../components/PipelineNode';
 import PipelineConnector from '../components/PipelineConnector';
 import NeuralNetwork from '../components/NeuralNetwork';
@@ -87,7 +88,14 @@ const Pipeline = () => {
         // STAGE 3: DistilBERT (3s)
         setCurrentStage(3);
         const response = await apiPromise;
-        if (response) setApiData(response.data);
+        if (response) {
+            const filteredData = {
+                ...response.data,
+                courses: filterEnglishCourses(response.data.courses || []),
+                confidence: normalizeConfidence(response.data.confidence)
+            };
+            setApiData(filteredData);
+        }
         await new Promise(r => setTimeout(r, 3000));
         setCompletedStages(prev => [...prev, 3]);
 

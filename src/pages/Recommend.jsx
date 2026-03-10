@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { filterEnglishCourses, normalizeConfidence } from '../utils/filter';
 import SearchBox from '../components/SearchBox';
 import CourseCard from '../components/CourseCard';
 import Loader from '../components/Loader';
@@ -22,7 +23,12 @@ const Recommend = () => {
 
         try {
             const response = await axios.post(`${API_URL}/recommend`, { profile });
-            setResults(response.data);
+            const filteredCourses = filterEnglishCourses(response.data.courses || []);
+            setResults({
+                ...response.data,
+                courses: filteredCourses,
+                confidence: normalizeConfidence(response.data.confidence)
+            });
 
             // Scroll to results section once loaded
             setTimeout(() => {
