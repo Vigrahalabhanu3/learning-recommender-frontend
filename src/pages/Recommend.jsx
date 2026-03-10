@@ -4,6 +4,7 @@ import axios from 'axios';
 import SearchBox from '../components/SearchBox';
 import CourseCard from '../components/CourseCard';
 import Loader from '../components/Loader';
+import CourseSkeleton from '../components/CourseSkeleton';
 import LevelBadge from '../components/LevelBadge';
 import { useTheme } from '../context/ThemeContext';
 
@@ -13,7 +14,6 @@ const Recommend = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [results, setResults] = useState(null);
-    const { isDark } = useTheme();
 
     const handleSearch = async (profile) => {
         setIsLoading(true);
@@ -23,6 +23,12 @@ const Recommend = () => {
         try {
             const response = await axios.post(`${API_URL}/recommend`, { profile });
             setResults(response.data);
+
+            // Scroll to results section once loaded
+            setTimeout(() => {
+                const el = document.getElementById('results-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         } catch (err) {
             setError(
                 err.response?.data?.error ||
@@ -53,58 +59,57 @@ const Recommend = () => {
 
             <SearchBox onSearch={handleSearch} isLoading={isLoading} />
 
-            <AnimatePresence mode="wait">
-                {isLoading && (
-                    <motion.div
-                        key="loader"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        onAnimationComplete={() => {
-                            if (window.innerWidth < 768) {
-                                window.scrollTo({ top: 400, behavior: 'smooth' });
-                            }
-                        }}
-                    >
-                        <Loader />
-                    </motion.div>
-                )}
-
-                {error && (
-                    <motion.div
-                        key="error"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        className="mt-8 bg-rose-500/10 border border-rose-500/30 text-rose-500 px-6 py-4 rounded-3xl max-w-2xl mx-auto text-center font-bold shadow-xl backdrop-blur-xl"
-                    >
-                        🚨 {error}
-                    </motion.div>
-                )}
-
-                {results && !isLoading && !error && (
-                    <motion.div
-                        key="results"
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-16 space-y-12"
-                    >
-                        <LevelBadge level={results.level} confidence={results.confidence} />
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {results.courses.map((course, index) => (
-                                <CourseCard key={index} course={course} index={index} />
-                            ))}
-                        </div>
-
-                        {results.courses.length === 0 && (
-                            <div className="text-center text-[var(--text-muted)] mt-10 text-xl font-medium py-12 bg-[var(--bg-card)] rounded-[2rem] border border-[var(--border-color)]">
-                                No exact matches found. Try describing your goals differently!
+            <div id="results-section" className="min-h-[200px] mt-12 md:mt-24">
+                <AnimatePresence mode="wait">
+                    {isLoading && (
+                        <div key="loader-container" className="space-y-16">
+                            <Loader />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {[1, 2, 3].map(i => <CourseSkeleton key={i} />)}
                             </div>
-                        )}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        </div>
+                    )}
+
+                    {error && (
+                        <motion.div
+                            key="error"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            className="bg-rose-500/10 border border-rose-500/30 text-rose-500 px-6 py-8 rounded-[2.5rem] max-w-2xl mx-auto text-center shadow-xl backdrop-blur-xl"
+                        >
+                            <span className="text-4xl block mb-4">🚨</span>
+                            <h4 className="text-xl font-black uppercase mb-1">Neural Interrupt</h4>
+                            <p className="font-bold opacity-80">{error}</p>
+                        </motion.div>
+                    )}
+
+                    {results && !isLoading && !error && (
+                        <motion.div
+                            key="results"
+                            initial={{ opacity: 0, y: 40 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="space-y-16"
+                        >
+                            <LevelBadge level={results.level} confidence={results.confidence} />
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {results.courses.map((course, index) => (
+                                    <CourseCard key={index} course={course} index={index} />
+                                ))}
+                            </div>
+
+                            {results.courses.length === 0 && (
+                                <div className="text-center py-20 bg-[var(--bg-secondary)] rounded-[3rem] border border-dashed border-[var(--border-color)]">
+                                    <span className="text-5xl block mb-4">🔍</span>
+                                    <h3 className="text-2xl font-black text-[var(--text-primary)] uppercase">No Matches Found</h3>
+                                    <p className="text-[var(--text-secondary)] mt-2">Try describing your learning goals with more specific keywords.</p>
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </motion.div>
     );
 };
