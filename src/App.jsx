@@ -47,34 +47,41 @@ const AppContent = ({ isSplashDone }) => {
 };
 
 function App() {
-    const [isSplashDone, setIsSplashDone] = useState(() => {
-        // Initial state check to prevent flicker
+    // Determine if we should show the splash screen immediately
+    const splashShownPref = (() => {
         try {
             return !!localStorage.getItem('splash_shown');
         } catch (e) {
             return true;
         }
-    });
+    })();
+
+    const [isSplashDone, setIsSplashDone] = useState(splashShownPref);
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)] transition-colors duration-500 overflow-x-hidden relative">
-            <AnimatePresence initial={false}>
+            <AnimatePresence>
                 {!isSplashDone && (
                     <SplashScreen key="splash" onFinish={() => setIsSplashDone(true)} />
                 )}
             </AnimatePresence>
 
-            {/* We render the app container always, but animate it in */}
-            <motion.div
-                initial={isSplashDone ? { opacity: 1 } : { opacity: 0 }}
-                animate={isSplashDone ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                style={{ visibility: isSplashDone ? 'visible' : 'hidden' }}
-            >
+            {/* Render app content immediately if splash is done, otherwise animate it in */}
+            {isSplashDone ? (
                 <Router>
-                    <AppContent isSplashDone={isSplashDone} />
+                    <AppContent isSplashDone={true} />
                 </Router>
-            </motion.div>
+            ) : (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                    <Router>
+                        <AppContent isSplashDone={false} />
+                    </Router>
+                </motion.div>
+            )}
         </div>
     );
 }

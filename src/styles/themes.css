@@ -1,3 +1,10 @@
+:root {
+    --bg-primary: #0f0c29;
+    --text-primary: #ffffff;
+    --accent-primary: #7c3aed;
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
 :root[data-theme='dark'] {
     --bg-primary: #0f0c29;
     --bg-secondary: #1a1740;
