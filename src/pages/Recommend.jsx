@@ -7,7 +7,10 @@ import Loader from '../components/Loader';
 import LevelBadge from '../components/LevelBadge';
 import { useTheme } from '../context/ThemeContext';
 
-const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:5000";
+const API_URL = process.env.REACT_APP_API_URL ||
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? `http://${window.location.hostname}:5001`
+        : "https://learning-recommender-backend.onrender.com");
 
 const Recommend = () => {
     const [isLoading, setIsLoading] = useState(false);
