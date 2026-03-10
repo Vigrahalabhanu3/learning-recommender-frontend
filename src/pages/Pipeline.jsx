@@ -7,10 +7,7 @@ import NeuralNetwork from '../components/NeuralNetwork';
 import CourseCard from '../components/CourseCard';
 import { useTheme } from '../context/ThemeContext';
 
-const API_URL = process.env.REACT_APP_API_URL ||
-    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-        ? `http://${window.location.hostname}:5001`
-        : "https://learning-recommender-backend.onrender.com");
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5001";
 
 const STAGES = [
     { id: 1, title: 'User Input', icon: '📝', color: 'blue', description: 'Raw text input received' },
